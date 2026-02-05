@@ -1,0 +1,66 @@
+(myenv) E:\SCOE_SEM_6\AppliedDataScience>python assignment1.py
+Dataset loaded successfully
+Initial Shape: (100000, 7)
+   TransactionID             TransactionDate   Amount  MerchantID TransactionType      Location  IsFraud
+0              1  2024-04-03 14:15:35.462794  4189.27         688          refund   San Antonio        0
+1              2  2024-03-19 13:20:35.462824  2659.71         109          refund        Dallas        0
+2              3  2024-01-08 10:08:35.462834   784.00         394        purchase      New York        0
+3              4  2024-04-13 23:50:35.462850  3514.40         944        purchase  Philadelphia        0
+4              5  2024-07-12 18:51:35.462858   369.07         475        purchase       Phoenix        0
+
+Missing Values:
+TransactionID      0
+TransactionDate    0
+Amount             0
+MerchantID         0
+TransactionType    0
+Location           0
+IsFraud            0
+dtype: int64
+
+After removing duplicates:
+(100000, 7)
+
+Original class distribution:
+Counter({0: 99000, 1: 1000})
+
+After One-Hot Encoding:
+   TransactionID  TransactionDate   Amount  ...  Location_San Antonio  Location_San Diego  Location_San Jose        
+0              1          1712153  4189.27  ...                  True               False              False        
+1              2          1710854  2659.71  ...                 False               False              False        
+2              3          1704708   784.00  ...                 False               False              False        
+3              4          1713052  3514.40  ...                 False               False              False        
+4              5          1720810   369.07  ...                 False               False              False        
+
+[5 rows x 14 columns]
+
+After SMOTE class distribution:
+Counter({0: 99000, 1: 99000})
+
+Balanced dataset created successfully
+   TransactionID  TransactionDate   Amount  ...  Location_San Diego  Location_San Jose  IsFraud
+0              1          1712153  4189.27  ...               False              False        0
+1              2          1710854  2659.71  ...               False              False        0
+2              3          1704708   784.00  ...               False              False        0
+3              4          1713052  3514.40  ...               False              False        0
+4              5          1720810   369.07  ...               False              False        0
+
+[5 rows x 15 columns]
+
+Final Feature & Target Shape:
+X shape: (198000, 13)
+y shape: (198000,)
+
+Numerical features scaled successfully
+   TransactionDate    Amount  MerchantID  ...  Location_San Antonio  Location_San Diego  Location_San Jose
+0        -0.174261  1.224728    0.704643  ...                  True               False              False
+1        -0.317961  0.108668   -1.498192  ...                 False               False              False
+2        -0.997852 -1.259964   -0.413895  ...                 False               False              False
+3        -0.074811  0.732302    1.678609  ...                 False               False              False
+4         0.783405 -1.562723   -0.105726  ...                 False               False              False
+
+[5 rows x 13 columns]
+
+Assignment 1 preprocessing completed successfully.
+
+(myenv) E:\SCOE_SEM_6\AppliedDataScience>
