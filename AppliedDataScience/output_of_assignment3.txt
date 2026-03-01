@@ -1,0 +1,95 @@
+ Dataset Loaded Successfully
+====================================================================================================
+Columns after cleaning:
+Index(['rank', 'youtuber', 'subscribers', 'video_views', 'category', 'title',
+       'uploads', 'country', 'abbreviation', 'channel_type',
+       'video_views_rank', 'country_rank', 'channel_type_rank',
+       'video_views_for_the_last_30_days', 'lowest_monthly_earnings',
+       'highest_monthly_earnings', 'lowest_yearly_earnings',
+       'highest_yearly_earnings', 'subscribers_for_last_30_days',
+       'created_year', 'created_month', 'created_date',
+       'gross_tertiary_education_enrollment_(%)', 'population',
+       'unemployment_rate', 'urban_population', 'latitude', 'longitude'],
+      dtype='object')
+====================================================================================================
+First 5 Rows:
+   rank                    youtuber  subscribers   video_views  \
+0     1                    T-Series    245000000  2.280000e+11   
+1     2              YouTube Movies    170000000  0.000000e+00   
+2     3                     MrBeast    166000000  2.836884e+10   
+3     4  Cocomelon - Nursery Rhymes    162000000  1.640000e+11   
+4     5                   SET India    159000000  1.480000e+11   
+
+           category                       title  uploads        country  \
+0             Music                    T-Series    20082          India   
+1  Film & Animation               youtubemovies        1  United States   
+2     Entertainment                     MrBeast      741  United States   
+3         Education  Cocomelon - Nursery Rhymes      966  United States   
+4             Shows                   SET India   116536          India   
+
+  abbreviation   channel_type  ...  subscribers_for_last_30_days  \
+0           IN          Music  ...                     2000000.0   
+1           US          Games  ...                           NaN   
+2           US  Entertainment  ...                     8000000.0   
+3           US      Education  ...                     1000000.0   
+4           IN  Entertainment  ...                     1000000.0   
+
+   created_year  created_month  created_date  \
+0        2006.0            Mar          13.0   
+1        2006.0            Mar           5.0   
+2        2012.0            Feb          20.0   
+3        2006.0            Sep           1.0   
+4        2006.0            Sep          20.0   
+
+   gross_tertiary_education_enrollment_(%)    population  unemployment_rate  \
+0                                     28.1  1.366418e+09               5.36   
+1                                     88.2  3.282395e+08              14.70   
+2                                     88.2  3.282395e+08              14.70   
+3                                     88.2  3.282395e+08              14.70   
+4                                     28.1  1.366418e+09               5.36   
+
+   urban_population   latitude  longitude  
+0       471031528.0  20.593684  78.962880  
+1       270663028.0  37.090240 -95.712891  
+2       270663028.0  37.090240 -95.712891  
+3       270663028.0  37.090240 -95.712891  
+4       471031528.0  20.593684  78.962880  
+
+[5 rows x 28 columns]
+
+Dataset Shape: (995, 28)
+
+Missing Values:
+rank                                         0
+youtuber                                     0
+subscribers                                  0
+video_views                                  0
+category                                    46
+title                                        0
+uploads                                      0
+country                                    122
+abbreviation                               122
+channel_type                                30
+video_views_rank                             1
+country_rank                               116
+channel_type_rank                           33
+video_views_for_the_last_30_days            56
+lowest_monthly_earnings                      0
+highest_monthly_earnings                     0
+lowest_yearly_earnings                       0
+highest_yearly_earnings                      0
+subscribers_for_last_30_days               337
+created_year                                 5
+created_month                                5
+created_date                                 5
+gross_tertiary_education_enrollment_(%)    123
+population                                 123
+unemployment_rate                          123
+urban_population                           123
+latitude                                   123
+longitude                                  123
+dtype: int64
+====================================================================================================
+Missing Values Handled Successfully
+====================================================================================================
+Data Visualization Completed Successfully
