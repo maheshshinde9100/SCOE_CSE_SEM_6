@@ -1,109 +1,169 @@
-# =========================================================
-# APPLIED DATA SCIENCE LAB
-# Assignment 3 – Data Visualization
-# Dataset: Global YouTube Statistics 2023
-# Student Name :  Mahesh Shinde
-# =========================================================
+# ==============================================================
+# Implementation and Optimization of Ensemble Models
+# Case Study: XGBoost & LightGBM (Regression Problem)
+# Dataset: California Housing Dataset
+# ==============================================================
 
-# 1. Import Required Libraries
+# ======================
+# 1. Import Libraries
+# ======================
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# ---------------------------------------------------------
-# 2. Load Dataset)
-# ---------------------------------------------------------
-df = pd.read_csv(
-    "./datasets/Global YouTube Statistics.csv",
-    encoding='latin1'
-)
+from sklearn.model_selection import train_test_split, KFold, cross_val_score, GridSearchCV
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-print("Dataset Loaded Successfully")
-print("="*100)
-# ---------------------------------------------------------
-# 3. Clean Column Names
-# ---------------------------------------------------------
-df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
 
-print("Columns after cleaning:")
-print(df.columns)
-print("="*100)
+import warnings
+warnings.filterwarnings("ignore")
 
-# ---------------------------------------------------------
-# 4. Basic Exploration
-# ---------------------------------------------------------
-print("First 5 Rows:")
-print(df.head())
+# ======================
+# 2. Load Dataset
+# ======================
+
+file_path = "./dataset/california_housing.csv"   
+target_column = "medianHouseValue"
+
+df = pd.read_csv(file_path)
 
 print("\nDataset Shape:", df.shape)
+print("\nFirst 5 Rows:\n", df.head())
 
-print("\nMissing Values:")
-print(df.isnull().sum())
-print("="*100)
+# ======================
+# 3. Separate Features & Target
+# ======================
 
-# ---------------------------------------------------------
-# 5. Data Cleaning
-# ---------------------------------------------------------
+X = df.drop(columns=[target_column])
+y = df[target_column]
 
-# Convert important numeric columns properly
-numeric_columns = [
-    'subscribers', 'video_views',
-    'highest_yearly_earnings',
-    'video_views_for_the_last_30_days'
-]
+# Handle missing values (if any)
+X.fillna(X.median(), inplace=True)
 
-for col in numeric_columns:
-    df[col] = pd.to_numeric(df[col], errors='coerce')
+# ======================
+# 4. Train-Test Split
+# ======================
 
-# Fill missing numerical values with mean
-df[numeric_columns] = df[numeric_columns].fillna(df[numeric_columns].mean())
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42
+)
 
-# Fill categorical missing values with mode
-categorical_cols = df.select_dtypes(include='object').columns
-for col in categorical_cols:
-    df[col] = df[col].fillna(df[col].mode()[0])
+print("\nTrain Shape:", X_train.shape)
+print("Test Shape:", X_test.shape)
 
-print("Missing Values Handled Successfully")
-print("="*100)
+# ======================
+# 5. XGBoost Regressor
+# ======================
 
-# ---------------------------------------------------------
-# 6. HISTOGRAM – Subscribers Distribution
-# ---------------------------------------------------------
-plt.figure(figsize=(6,4))
-plt.hist(df['subscribers'], bins=30)
-plt.title("Distribution of Subscribers")
-plt.xlabel("Subscribers")
-plt.ylabel("Frequency")
+print("\n========== XGBOOST REGRESSOR ==========")
+
+xgb_model = XGBRegressor(
+    n_estimators=300,
+    learning_rate=0.05,
+    max_depth=5,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    random_state=42
+)
+
+xgb_model.fit(X_train, y_train)
+
+y_pred_xgb = xgb_model.predict(X_test)
+
+mae = mean_absolute_error(y_test, y_pred_xgb)
+mse = mean_squared_error(y_test, y_pred_xgb)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred_xgb)
+
+print("MAE:", mae)
+print("MSE:", mse)
+print("RMSE:", rmse)
+print("R2 Score:", r2)
+
+# ======================
+# 6. Cross Validation
+# ======================
+
+print("\n========== CROSS VALIDATION ==========")
+
+kf = KFold(n_splits=5, shuffle=True, random_state=42)
+
+cv_scores = cross_val_score(
+    xgb_model,
+    X,
+    y,
+    cv=kf,
+    scoring='r2'
+)
+
+print("Cross Validation R2 Scores:", cv_scores)
+print("Mean CV R2:", cv_scores.mean())
+
+# ======================
+# 7. Hyperparameter Tuning
+# ======================
+
+print("\n========== GRID SEARCH OPTIMIZATION ==========")
+
+param_grid = {
+    'max_depth': [3, 5, 7],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'n_estimators': [200, 300]
+}
+
+grid_search = GridSearchCV(
+    estimator=XGBRegressor(random_state=42),
+    param_grid=param_grid,
+    cv=3,
+    scoring='r2',
+    n_jobs=-1
+)
+
+grid_search.fit(X_train, y_train)
+
+print("Best Parameters:", grid_search.best_params_)
+print("Best CV R2 Score:", grid_search.best_score_)
+
+# ======================
+# 8. LightGBM Regressor
+# ======================
+
+print("\n========== LIGHTGBM REGRESSOR ==========")
+
+lgb_model = LGBMRegressor(
+    n_estimators=300,
+    learning_rate=0.05,
+    max_depth=5,
+    random_state=42
+)
+
+lgb_model.fit(X_train, y_train)
+
+y_pred_lgb = lgb_model.predict(X_test)
+
+print("LightGBM R2:", r2_score(y_test, y_pred_lgb))
+print("LightGBM RMSE:", np.sqrt(mean_squared_error(y_test, y_pred_lgb)))
+
+# ======================
+# 9. Feature Importance
+# ======================
+
+print("\n========== FEATURE IMPORTANCE ==========")
+
+importances = xgb_model.feature_importances_
+indices = np.argsort(importances)[::-1]
+
+plt.figure(figsize=(10,6))
+plt.title("Feature Importance - XGBoost")
+plt.bar(range(X.shape[1]), importances[indices])
+plt.xticks(range(X.shape[1]), X.columns[indices], rotation=90)
+plt.tight_layout()
 plt.show()
 
-# ---------------------------------------------------------
-# 7. BOXPLOT – Highest Yearly Earnings
-# ---------------------------------------------------------
-plt.figure(figsize=(6,4))
-sns.boxplot(x=df['highest_yearly_earnings'])
-plt.title("Boxplot of Highest Yearly Earnings")
-plt.show()
-
-# ---------------------------------------------------------
-# 8. SCATTER PLOT – Subscribers vs Video Views
-# ---------------------------------------------------------
-plt.figure(figsize=(6,4))
-plt.scatter(df['subscribers'], df['video_views'])
-plt.title("Subscribers vs Video Views")
-plt.xlabel("Subscribers")
-plt.ylabel("Video Views")
-plt.show()
-
-# ---------------------------------------------------------
-# 9. BAR CHART – Top Channel Categories
-# ---------------------------------------------------------
-plt.figure(figsize=(8,5))
-df['category'].value_counts().head(10).plot(kind='bar')
-plt.title("Top 10 YouTube Channel Categories")
-plt.xlabel("Category")
-plt.ylabel("Count")
-plt.xticks(rotation=45)
-plt.show()
-
-print("Data Visualization Completed Successfully")
+print("\nAssignment Completed Successfully ✅")

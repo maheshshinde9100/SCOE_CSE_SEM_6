@@ -1,100 +1,96 @@
-# Assignment 2 – Normalization & Standardization
-# Dataset: Housing Prices (Kaggle)
-import pandas as pd
+# =====================================================
+# Assignment 2: PCA + t-SNE (NaN Fixed Version)
+# Name : Mahesh Shinde
+# =====================================================
+
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-print("=" * 80)
-print("Libraries Imported Successfully")
-print("=" * 80)
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.impute import SimpleImputer
 
-# ---------------------------------------------------------
-# 2. Load Dataset
-# ---------------------------------------------------------
-df = pd.read_csv("Housing.csv")
+# -----------------------------------------------------
+# 1. Load Dataset
+# -----------------------------------------------------
+data = pd.read_csv("/content/train.csv")
 
-print("Dataset Loaded Successfully")
-print("=" * 80)
+print("Dataset Shape:", data.shape)
 
-# ---------------------------------------------------------
-# 3. Clean Column Names
-# ---------------------------------------------------------
-df.columns = df.columns.str.strip().str.lower()
+# -----------------------------------------------------
+# 2. Separate Features & Label
+# -----------------------------------------------------
+X = data.drop("label", axis=1)
+y = data["label"]
 
-print("Column Names:")
-print(df.columns.tolist())
-print("=" * 80)
+# -----------------------------------------------------
+# 3. Handle Missing Values (IMPORTANT FIX)
+# -----------------------------------------------------
+print("Total Missing Values:", X.isnull().sum().sum())
 
-# ---------------------------------------------------------
-# 4. Display Basic Information
-# ---------------------------------------------------------
-print("First 5 Records:")
-print(df.head())
-print("=" * 80)
+imputer = SimpleImputer(strategy="mean")
+X_imputed = imputer.fit_transform(X)
 
-print("Dataset Shape:", df.shape)
-print("=" * 80)
+# -----------------------------------------------------
+# 4. Scale Features
+# -----------------------------------------------------
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X_imputed)
 
-print("Missing Values:")
-print(df.isnull().sum())
-print("=" * 80)
+# -----------------------------------------------------
+# 5. PCA
+# -----------------------------------------------------
+pca = PCA(n_components=50)
+X_pca = pca.fit_transform(X_scaled)
 
-# ---------------------------------------------------------
-# 5. Remove Duplicate Records
-# ---------------------------------------------------------
-initial_rows = df.shape[0]
-df.drop_duplicates(inplace=True)
-final_rows = df.shape[0]
+print("PCA Reduced Shape:", X_pca.shape)
+print("Explained Variance (50 components):",
+      np.sum(pca.explained_variance_ratio_))
 
-print(f"Duplicates Removed: {initial_rows - final_rows}")
-print("=" * 80)
+# Plot cumulative explained variance
+plt.figure(figsize=(8,5))
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel("Number of Components")
+plt.ylabel("Cumulative Explained Variance")
+plt.title("PCA Explained Variance")
+plt.grid()
+plt.show()
 
-# ---------------------------------------------------------
-# 6. Handle Missing Values
-# ---------------------------------------------------------
-# Fill numerical columns with mean
-numerical_cols = df.select_dtypes(include=np.number).columns
-df[numerical_cols] = df[numerical_cols].fillna(df[numerical_cols].mean())
+# -----------------------------------------------------
+# 6. t-SNE (Use smaller sample for speed)
+# -----------------------------------------------------
+sample_size = min(2000, X_pca.shape[0])
 
-# Fill categorical columns with mode
-categorical_cols = df.select_dtypes(include=['object']).columns
-for col in categorical_cols:
-    df[col] = df[col].fillna(df[col].mode()[0])
+X_sample = X_pca[:sample_size]
+y_sample = y[:sample_size]
 
-print("Missing Values Handled Successfully")
-print("=" * 80)
+tsne = TSNE(n_components=2, random_state=42, perplexity=30)
+X_tsne = tsne.fit_transform(X_sample)
 
-# ---------------------------------------------------------
-# 7. Select Only Numerical Columns for Scaling
-# ---------------------------------------------------------
-numeric_data = df.select_dtypes(include=np.number)
+print("t-SNE Output Shape:", X_tsne.shape)
 
-print("Numerical Columns Selected:")
-print(numeric_data.columns.tolist())
-print("=" * 80)
+# -----------------------------------------------------
+# 7. Visualization
+# -----------------------------------------------------
+plt.figure(figsize=(10,8))
+sns.scatterplot(
+    x=X_tsne[:,0],
+    y=X_tsne[:,1],
+    hue=y_sample,
+    palette="tab10",
+    legend="full",
+    s=50
+)
 
-# ---------------------------------------------------------
-# 8. Normalization (Min-Max Scaling)
-# ---------------------------------------------------------
-minmax_scaler = MinMaxScaler()
-normalized_data = minmax_scaler.fit_transform(numeric_data)
+plt.title("t-SNE Visualization of MNIST Dataset")
+plt.xlabel("t-SNE Component 1")
+plt.ylabel("t-SNE Component 2")
+plt.legend(title="Digit")
+plt.show()
 
-normalized_df = pd.DataFrame(normalized_data, columns=numeric_data.columns)
-
-print("Normalized Data (First 5 Rows):")
-print(normalized_df.head())
-print("=" * 80)
-
-# ---------------------------------------------------------
-# 9. Standardization (Z-Score Scaling)
-# ---------------------------------------------------------
-standard_scaler = StandardScaler()
-standardized_data = standard_scaler.fit_transform(numeric_data)
-
-standardized_df = pd.DataFrame(standardized_data, columns=numeric_data.columns)
-
-print("Standardized Data (First 5 Rows):")
-print(standardized_df.head())
-print("=" * 80)
-
-print("Data Handling Completed Successfully ✅")
+# =====================================================
+# END
+# =====================================================
