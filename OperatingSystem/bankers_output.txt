@@ -1,0 +1,49 @@
+PS D:\SCOE_SEM_6\SCOE_CSE_SEM_6\OperatingSystem>  d:; cd 'd:\SCOE_SEM_6\SCOE_CSE_SEM_6\OperatingSystem'; & 'C:\Program Files\Java\jdk-23\bin\java.exe' '-agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:53196' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\MAHESH\AppData\Roaming\Code\User\workspaceStorage\bcfbff7f6c471df8fe6914b136cc95b6\redhat.java\jdt_ws\OperatingSystem_6f05cad\bin' 'BankersAlgorithm' 
+Enter number of processes: 5
+Enter number of resources: 3
+
+Enter Allocation Matrix:
+0 1 0
+2 0 0
+3 0 2
+2 1 1
+0 0 2
+
+Enter Maximum Matrix:
+7 5 3
+3 2 2
+9 0 2
+2 2 2
+4 3 3
+
+Enter Available Resources:
+3 3 2
+
+System is in SAFE state.
+Safe Sequence: P1 P3 P4 P0 P2 
+PS D:\SCOE_SEM_6\SCOE_CSE_SEM_6\OperatingSystem>  d:; cd 'd:\SCOE_SEM_6\SCOE_CSE_SEM_6\OperatingSystem'; & 'C:\Program Files\Java\jdk-23\bin\java.exe' '-agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:53196' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\MAHESH\AppData\Roaming\Code\User\workspaceStorage\bcfbff7f6c471df8fe6914b136cc95b6\redhat.java\jdt_ws\OperatingSystem_6f05cad\bin' 'BankersAlgorithm'
+PS D:\SCOE_SEM_6\SCOE_CSE_SEM_6\OperatingSystem>  d:; cd 'd:\SCOE_SEM_6\SCOE_CSE_SEM_6\OperatingSystem'; & 'C:\Program Files\Java\jdk-23\bin\java.exe' '-agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:53200' '-XX:+ShowCodeDetailsInExceptionMessages' '-cp' 'C:\Users\MAHESH\AppData\Roaming\Code\User\workspaceStorage\bcfbff7f6c471df8fe6914b136cc95b6\redhat.java\jdt_ws\OperatingSystem_6f05cad\bin' 'BankersAlgorithm' 
+Enter number of processes: 5
+Enter number of resources: 3
+
+Enter Allocation Matrix:
+0 1 0
+2 0 0
+0 1 0
+2 0 0
+3 0 2
+2 1 1
+0 0 2
+
+Enter Maximum Matrix:
+7 5 3
+3 2 2
+9 0 2
+2 2 2
+4 3 3
+
+Enter Available Resources:
+3 2 1
+
+System is NOT in safe state!
+PS D:\SCOE_SEM_6\SCOE_CSE_SEM_6\OperatingSystem>
